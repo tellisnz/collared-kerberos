@@ -5,9 +5,8 @@
     <title>Spring Security Kerberos Example</title>
 </head>
 <body>
-<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
-<h1 th:inline="text">[[${#dates.format(#dates.createNow(), 'dd MMM yyyy HH:mm')}]]</h1>
-<h1 th:inline="text">Remote Kerberised Service Output: [[${output}]]</h1>
+<h1 th:inline="text">Sent token for [[${#httpServletRequest.remoteUser}]] to remote Kerberised service.</h1>
+<h1 th:inline="text">Remote Kerberised Service Responded with: [[${output}]]</h1>
 <h1 th:inline="text">Remote Kerberised Service Call time: [[${outputMillis}]]ms</h1>
 </body>
 </html>
