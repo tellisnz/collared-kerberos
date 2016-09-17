@@ -1,0 +1,6 @@
+server:
+    port: <<PORT TO RUN ON>>
+app:
+    service-principal: <<APPLICATION SERVICE PRINCIPAL FOR THE GATEWAY>>
+    service-keytab-location: <<APPLICATION SERVICE KEYTAB FOR THE GATEWAY>>
+    kerberised-target-url: http://<<SOME TARGET KERBERISED REST API WE'RE DELEGATING FOR>>

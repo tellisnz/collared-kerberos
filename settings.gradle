@@ -1,0 +1,5 @@
+rootProject.name = 'collared-kerberos-root'
+include 'collared-kerberos-example-gateway'
+include 'collared-kerberos'
+include 'collared-kerberos-example-hop'
+

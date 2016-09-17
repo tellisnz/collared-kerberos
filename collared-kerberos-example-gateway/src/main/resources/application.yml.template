@@ -1,0 +1,7 @@
+server:
+    port: <<PORT TO RUN ON>>
+app:
+    spnego-principal: <<SPNEGO PRINCIPAL FOR THE GATEWAY>>
+    spnego-keytab-location: <<SPNEGO KEYTAB FOR THE GATEWAY>>
+    hop-target-url: http://<<SOME TARGET HOP REST API>>
+    kerberised-target-url: http://<<SOME TARGET KERBERISED REST API WE'RE DELEGATING FOR>>
