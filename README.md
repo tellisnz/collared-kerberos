@@ -11,10 +11,20 @@ Helper classes that can be used to perform constrained delegation via S4U2Proxy.
 * CollaredKerberosTokenFactory - An example/helper for creating SPNEGO tokens using the obtained Krb5ProxyCredential.
 * httpclient package - A simple HttpClient SPNEGO scheme that simple returns the provided token during the SPNEGO sequence.
 
-### collared-kerberos-example-gateway
-An example app configured with [spring security kerberos](http://projects.spring.io/spring-security-kerberos/) that also uses helper clases found in 
+
+### The Example
+I set this example up to fulfil my particular use case at the time - that a request from a user would hit a Kerberised service, get passed through a couple of insecure services, and finally hit another kerberised service that required the end users credentials. So collared-kerberos-example-gateway is a kerberised service and collared-kerberos-example-hop isn't, although it makes a kerberised call to a downstream service. It works by generating a service ticket token for the kerberised end service during the gateway interaction, and passing that service ticket as a header to the hop service. The hop service then simply uses that token and KerberosRestTemplate to call the downstream kerberised service.
+
+#### collared-kerberos-example-gateway
+The gateway service configured with [spring security kerberos](http://projects.spring.io/spring-security-kerberos/) that also uses helper classes found in collared-kerberos. Key points to note:
+* WebSecurityConfig - Your stock spring security setup with a SPNEGO authentication filter, using the tweaked SunKerberosJaasTicketValidator.
+* GatewayController - Obtains the delegated credential after the SPNEGO sequence, puts it in a header and calls the configured hop service.
+
+#### collared-kerberos-example-hop
+Key points:
+* HopController - gets the token out of the header and calls the target kerberised service using KerberosRestTemplate, with a special HttpClient that uses the token at the right point of the SPNEGO sequence.
 
 ## Setting up a Test AD Environment
 
 ## Why is this called Collared Kerberos? 
-Because I'm terrible at naming things: Kerberos being a mythological three headed dog, and a collar being a sort of 'contraint' on it. Yeah I know.
+Because I'm terrible at naming things: Kerberos being a mythological three headed dog, and a collar being a sort of 'constraint' on it. Yeah I know. Terrible.
