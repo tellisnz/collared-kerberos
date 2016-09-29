@@ -7,7 +7,7 @@ The Kerberos Double Hop problem occurs when you have a kerberised service A that
 ## What is in this repo?
 ### collared-kerberos
 Helper classes that can be used to perform constrained delegation using spring-security-kerberos and S4U2Proxy.
-* springsecuritykerberos package - Contains the changes found in [this pull request](https://github.com/spring-projects/spring-security-kerberos/pull/27) as well as a tweak to the Sun JAAS config to have isInitiator=true. Necessary to get Krb5ProxyCredential as described in the comment [here](https://github.com/openjdk-mirror/jdk/blob/jdk8u/jdk8u/master/src/share/classes/sun/security/jgss/krb5/Krb5Context.java#L542).
+* springsecuritykerberos package - Contains the changes found in [this pull request](https://github.com/spring-projects/spring-security-kerberos/pull/27) as well as a tweak to the Sun JAAS config to have `isInitiator=true`. Necessary to get Krb5ProxyCredential as described in the comment [here](https://github.com/openjdk-mirror/jdk/blob/jdk8u/jdk8u/master/src/share/classes/sun/security/jgss/krb5/Krb5Context.java#L542).
 * CollaredKerberosTokenFactory - An example/helper for creating SPNEGO tokens using the obtained Krb5ProxyCredential.
 * httpclient package - A simple HttpClient SPNEGO scheme that can be used in a KerberosRestTemplate and simply returns the provided token during the SPNEGO sequence.
 
@@ -27,7 +27,7 @@ The gateway service configured with [spring security kerberos](http://projects.s
 ### Prerequisites
 * Virtualbox
 * Patience
-* Googling ability - I can't guarantee these instructions will work. 
+* Googling ability - I can't guarantee these instructions will work and will happily accept PRs to fix them, but you'll likely need to work through some problems.
 
 ### Set Up a Host Only Network in Virtualbox
 1. File -> Preferences -> Network -> Host-only Networks. Make sure there is an adapter.
@@ -46,9 +46,17 @@ The gateway service configured with [spring security kerberos](http://projects.s
 1. Open up the Server Manager, and click Add Roles and Features. Next, Next, Next. Select Active Directory Domain Services and DNS Server. Next through to the end. You may get a warning about not having a static IP - I couldn't quite figure out how to do this and it worked with DHCP so I left it. Install and then close.
 1. Click on the orange exclaimation mark and click promote this server to Domain Controller. Select add a new forest and give it a name, e.g. MYCOOLDOMAIN.COM
 1. Next through the rest of the options and Install. Server will restart.
-1. 
 
 #### Set Up User Accounts
+1. Once the server has restarted click start, start typing active and then open Active Directory Users and Groups. Expand your domain and click on Managed Service Accounts. Right click in the white space and click new -> User.
+1. Give a name for your delegating service like MYCOOLSERVICE and type the same in the User Login Name. Click next and then untick User must change password on next login and tick password never expires and then create.
+1. Repeat above for another user called DOWNSTREAM - this will be our downstream kerberised service B.
+1. Repeat above for our end user, e.g. Tom. This will be the user that logs into Windows and uses IE to call our first kerberised service.
+1. Create a SPNEGO service principal name (SPN) for MYCOOLSERVICE by opening powershell and running `setspn -s HTTP/mycoolservice.mycooldomain.com MYCOOLSERVICE`.
+1. Create a Keytab for the service by running `ktpass -out C:\Users\Administrator\mycoolservice.keytab -princ HTTP/mycoolservice.mycooldomain.com@MYCOOLDOMAIN.COM -mapUser MYCOOLSERVICE -mapOp set +rndpass -crypto RC4-HMAC-NT -pType KRB5_NT_PRINCIPAL`.
+1. Add the MYCOOLSERVICE user principal to the keytab using the command `ktpass -in C:\Users\Administrator\mycoolservice.keytab -out C:\Users\Administrator\mycoolservice.keytab -princ MYCOOLSERVICE@MYCOOLDOMAIN.COM -mapUser MYCOOLSERVICE -mapOp set +rndpass -crypto RC4-HMAC-NT -pType KRB5_NT_PRINCIPAL`. Ignore the warning.
+1. Repeat the above for the DOWNSTREAM service, but this time for the SPNEGO principal use HTTP/downstream.mycooldomain.com.
+
 
 ### Set Up A Linux Host for the Gateway & Hop
 1. Download Ubuntu from [here](http://www.ubuntu.com/download/desktop).
@@ -58,7 +66,7 @@ The gateway service configured with [spring security kerberos](http://projects.s
 1. Create another Virtualbox Unbutu VM as in the Gateway/Hop one above.
 1. TODO get keytab and place on server.
 1. Clone the hadoop-auth example from [here](https://github.com/apache/hadoop/tree/trunk/hadoop-common-project/hadoop-auth).
-1. build it.
+1. Build it.
 1. Download [apache Tomcat](http://tomcat.apache.org/download-80.cgi) and extract.
 1. 
 
