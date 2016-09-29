@@ -26,23 +26,47 @@ The gateway service configured with [spring security kerberos](http://projects.s
 
 ### Prerequisites
 * Virtualbox
-* Patience. A lot of patience.
+* Patience
+* Googling ability - I can't guarantee these instructions will work. 
 
-### Set Up a Host Only Network on Virtualbox
+### Set Up a Host Only Network in Virtualbox
 1. File -> Preferences -> Network -> Host-only Networks. Make sure there is an adapter.
 1. Edit it and note down the address.
 1. Some people get this working using static IPs for the following hosts, but I used a DHCP server and made sure the hosts always got the same IP.
 
 ### Set Up Active Directory Server
-1. Download an evaluation Windows Server 2012 from [here](https://www.microsoft.com/en-GB/evalcenter/evaluate-windows-server-2012-r2)
+#### Create Server
+1. Download an evaluation Windows Server 2012 R2 from [here](https://www.microsoft.com/en-GB/evalcenter/evaluate-windows-server-2012-r2)
 1. In virtualbox, click new.
 1. Give your server a good name, leave the defaults, and click create.
-1. Right click your new server and click on Storage. Click the 'Empty' disk in the 'Storage Tree' section, then click the disc on the far right. Select Choose Virtual Optical Disk File and then find where you downloaded your ISO and select it.
-1. Double click to power it up.
+1. Right click your new server, click on settings, and click on Storage. Click the 'Empty' disk in the 'Storage Tree' section, then click the disc on the far right. Select Choose Virtual Optical Disk File and then find where you downloaded your ISO and select it.
+1. Click on Network, Adapter 2, Enable Network Adapter. Select Host-Only Adapter in the Attached to drop down and click OK.
+1. Double click to power it up. Go through the install process making sure to select 'Windows Server 2012 R2 Standard Evaluation (Server with a GUI)'. Do a 'Custom' install and finish up the install.
+1. After install, give it a password and log in.
+1. Open up the Server Manager, and click Add Roles and Features. Next, Next, Next. Select Active Directory Domain Services and DNS Server. Next through to the end. You may get a warning about not having a static IP - I couldn't quite figure out how to do this and it worked with DHCP so I left it. Install and then close.
+1. Click on the orange exclaimation mark and click promote this server to Domain Controller. Select add a new forest and give it a name, e.g. MYCOOLDOMAIN.COM
+1. Next through the rest of the options and Install. Server will restart.
+1. 
+
+#### Set Up User Accounts
 
 ### Set Up A Linux Host for the Gateway & Hop
+1. Download Ubuntu from [here](http://www.ubuntu.com/download/desktop).
+1. TODO get keytab and place on server.
+
 ### Set Up A Linux Host for the downstream example Kerberised Service
+1. Create another Virtualbox Unbutu VM as in the Gateway/Hop one above.
+1. TODO get keytab and place on server.
+1. Clone the hadoop-auth example from [here](https://github.com/apache/hadoop/tree/trunk/hadoop-common-project/hadoop-auth).
+1. build it.
+1. Download [apache Tomcat](http://tomcat.apache.org/download-80.cgi) and extract.
+1. 
+
 ### Set Up a Windows Host to be the End User
+1. 
+1. 
+
+### Common Problems
 
 ## Why is this called Collared Kerberos? 
 Because I'm terrible at naming things: Kerberos being a mythological three headed dog, and a collar being a sort of 'constraint' on it. Yeah I know. Terrible.
