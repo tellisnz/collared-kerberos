@@ -12,7 +12,7 @@ Helper classes that can be used to perform constrained delegation using spring-s
 * httpclient package - A simple HttpClient SPNEGO scheme that can be used in a KerberosRestTemplate and simply returns the provided token during the SPNEGO sequence.
 
 ### The Example
-I set this example up to fulfil my particular use case at the time - that a request from a user would hit a Kerberised service, get passed through a couple of insecure services, and finally hit another kerberised service that required the end users credentials. So collared-kerberos-example-gateway is a kerberised service and collared-kerberos-example-hop isn't, although it makes a kerberised call to a downstream service. It works by generating a service ticket token for the kerberised end service during the gateway interaction, and passing that service ticket as a header to the hop service. The hop service then simply uses that token and KerberosRestTemplate to call the downstream kerberised service.
+I set this example up to fulfil my particular use case at the time around the Hadoop stack - that a request from a user would hit a Kerberised service, get passed through a couple of insecure services, and finally hit another kerberised service that required the end users credentials. So collared-kerberos-example-gateway is a kerberised service and collared-kerberos-example-hop isn't, although it makes a kerberised call to a downstream service. It works by generating a service ticket token for the kerberised end service during the gateway interaction, and passing that service ticket as a header to the hop service. The hop service then simply uses that token and KerberosRestTemplate to call the downstream kerberised service. The meat of the constrained delegation is in the gateway example.
 
 #### collared-kerberos-example-gateway
 The gateway service configured with [spring security kerberos](http://projects.spring.io/spring-security-kerberos/) that also uses helper classes found in collared-kerberos. Key points to note:
@@ -23,13 +23,16 @@ The gateway service configured with [spring security kerberos](http://projects.s
 * HopController - gets the token out of the header and calls the target kerberised service using KerberosRestTemplate, with a special HttpClient that uses the token at the right point of the SPNEGO sequence.
 
 ## Setting up a Test AD Environment
+
 ### Prerequisites
 * Virtualbox
 * Patience. A lot of patience.
+
 ### Set Up a Host Only Network on Virtualbox
 1. File -> Preferences -> Network -> Host-only Networks. Make sure there is an adapter.
 1. Edit it and note down the address.
 1. Some people get this working using static IPs for the following hosts, but I used a DHCP server and made sure the hosts always got the same IP.
+
 ### Set Up Active Directory Server
 1. Download an evaluation Windows Server 2012 from [here](https://www.microsoft.com/en-GB/evalcenter/evaluate-windows-server-2012-r2)
 1. In virtualbox, click new.
