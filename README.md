@@ -20,11 +20,23 @@ The gateway service configured with [spring security kerberos](http://projects.s
 * GatewayController - Obtains the delegated credential after the SPNEGO sequence, puts it in a header and calls the configured hop service.
 
 #### collared-kerberos-example-hop
-Key points:
 * HopController - gets the token out of the header and calls the target kerberised service using KerberosRestTemplate, with a special HttpClient that uses the token at the right point of the SPNEGO sequence.
 
 ## Setting up a Test AD Environment
+### Prerequisites
+* Virtualbox
+* Patience. A lot of patience.
+### Set Up a Host Only Network on Virtualbox
+1. File -> Preferences -> Network -> Host-only Networks. Make sure there is an adapter.
+1. Edit it and note down the address.
+1. Some people get this working using static IPs for the following hosts, but I used a DHCP server and made sure the hosts always got the same IP.
 ### Set Up Active Directory Server
+1. Download an evaluation Windows Server 2012 from [here](https://www.microsoft.com/en-GB/evalcenter/evaluate-windows-server-2012-r2)
+1. In virtualbox, click new.
+1. Give your server a good name, leave the defaults, and click create.
+1. Right click your new server and click on Storage. Click the 'Empty' disk in the 'Storage Tree' section, then click the disc on the far right. Select Choose Virtual Optical Disk File and then find where you downloaded your ISO and select it.
+1. Double click to power it up.
+
 ### Set Up A Linux Host for the Gateway & Hop
 ### Set Up A Linux Host for the downstream example Kerberised Service
 ### Set Up a Windows Host to be the End User
